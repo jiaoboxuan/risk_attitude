@@ -1,0 +1,434 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\bjiao\OneDrive - The University of Chicago\Desktop\College\ECON 21160\Week 7 (Harrison)\homework\homework-victor.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}26 Nov 2024, 00:07:45
+{txt}
+{com}. 
+. * configurations and certifications
+. capture: version 18
+{txt}
+{com}. set more off
+{txt}
+{com}. capture: set processors 1
+{txt}
+{com}. set scheme stcolor
+{txt}
+{com}. capture: set scheme stcolor
+{txt}
+{com}. graph set window fontface "Candara"
+{txt}
+{com}. 
+. * install esttab
+. ssc install estout
+{txt}checking {hilite:estout} consistency and verifying not already installed...
+all files already exist and are up to date.
+
+{com}. 
+. * tell us what version ran
+. about
+
+{txt}StataNow/MP 18.5 for Windows (64-bit x86-64)
+Revision 22 May 2024
+Copyright 1985-2023 StataCorp LLC
+
+Total physical memory:     {res}  16.00 GB
+{txt}Available physical memory: {res}  10.34 GB
+
+{txt}Stata license: {res}745-user 2-core network, expiring 30 Jun 2025
+{txt}Serial number: {res}501809309429
+  {txt}Licensed to: {res}University of Chicago
+               ATS
+{txt}
+{com}. 
+. * read in the homework data
+. use dohmen, clear
+{txt}
+{com}. 
+. **# Descriptive functions
+. * description of a few variables that may be
+. * useful to the regression
+. * run when necessary
+. describe row_hi row_lo
+
+{txt}Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+{hline}
+{p 0 48}{res}{bind:row_hi         }{txt}{bind: float   }{bind:%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Upper row number of the switch{p_end}
+{p 0 48}{bind:row_lo         }{txt}{bind: float   }{bind:%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Lower row number of the switch{p_end}
+{txt}
+{com}. describe crra_hi crra_lo
+
+{txt}Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+{hline}
+{p 0 48}{res}{bind:crra_hi        }{txt}{bind: float   }{bind:%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Upper bound of CRRA{p_end}
+{p 0 48}{bind:crra_lo        }{txt}{bind: float   }{bind:%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Lower bound of CRRA{p_end}
+{txt}
+{com}. summarize row_hi row_lo risk_attitude
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}row_hi {c |}{res}        420    8.554762    5.285126          1         20
+{txt}{space 6}row_lo {c |}{res}        417    9.047962    5.704469          1         20
+{txt}risk_attit~e {c |}{res}        450    4.764444    2.535727          0         10
+{txt}
+{com}. summarize crra_hi crra_lo risk_attitude
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}crra_hi {c |}{res}        417    .4103597    .3797287       -.52        .88
+{txt}{space 5}crra_lo {c |}{res}        420    .4551429      .31588       -.52        .88
+{txt}risk_attit~e {c |}{res}        450    4.764444    2.535727          0         10
+{txt}
+{com}. 
+. 
+. * preserve the dohmen dataset from being directly edited
+. preserve
+{txt}
+{com}. 
+. **# Task 1
+. intreg row_lo row_hi risk_attitude
+
+{txt}Fitting constant-only model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1366.8696}  
+Iteration 1:{space 2}Log likelihood = {res:-1360.4703}  
+Iteration 2:{space 2}Log likelihood = {res:-1360.4422}  
+Iteration 3:{space 2}Log likelihood = {res:-1360.4422}  
+{res}
+{txt}Fitting full model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1354.6637}  
+Iteration 1:{space 2}Log likelihood = {res:-1348.3396}  
+Iteration 2:{space 2}Log likelihood = {res:-1348.3131}  
+Iteration 3:{space 2}Log likelihood = {res:-1348.3131}  
+{res}
+{txt}{col 1}Interval regression{col 53}{lalign 17:Number of obs}{col 70} = {res}{ralign 6:450}
+{txt}{col 53}{ralign 17:Uncensored}{col 70} = {res}{ralign 6:0}
+{txt}{col 53}{ralign 17:Left-censored}{col 70} = {res}{ralign 6:33}
+{txt}{col 53}{ralign 17:   Right-censored}{col 70} = {res}{ralign 6:30}
+{txt}{col 53}{ralign 17:Interval-cens.}{col 70} = {res}{ralign 6:387}
+
+{txt}{col 53}{lalign 17:LR chi2({res:1})}{col 70} = {res}{ralign 6:24.26}
+{txt}{col 1}{lalign 14:Log likelihood}{col 15} = {res}{ralign 10:-1348.3131}{txt}{col 53}{lalign 17:Prob > chi2}{col 70} = {res}{ralign 6:0.0000}
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 15}{c |} Coefficient{col 27}  Std. err.{col 39}      z{col 47}   P>|z|{col 55}     [95% con{col 68}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+risk_attitude {c |}{col 15}{res}{space 2} .6113368{col 27}{space 2} .1225556{col 38}{space 1}    4.99{col 47}{space 3}0.000{col 55}{space 4} .3711322{col 68}{space 3} .8515413
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 5.918866{col 27}{space 2} .6609935{col 38}{space 1}    8.95{col 47}{space 3}0.000{col 55}{space 4} 4.623343{col 68}{space 3}  7.21439
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     /lnsigma {c |}{col 15}{res}{space 2} 1.866821{col 27}{space 2} .0374396{col 38}{space 1}   49.86{col 47}{space 3}0.000{col 55}{space 4} 1.793441{col 68}{space 3} 1.940202
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+        sigma {c |}{col 15}{res}{space 2} 6.467705{col 27}{space 2} .2421485{col 55}{space 4} 6.010098{col 68}{space 3} 6.960155
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. estimates store homoskedastic_model
+{txt}
+{com}. 
+. * export into LaTeX
+. esttab homoskedastic_model using "homoskedastic_model.tex", replace se title ("Interval regression between row switch and risk attitude, homoskedastic") label keep(risk_attitude _cons) stats(ll N, labels("Log-Likelihood" "Observations")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+{res}{txt}(output written to {browse  `"homoskedastic_model.tex"'})
+
+{com}. 
+. **# Task 2
+. intreg row_lo row_hi risk_attitude, het(crra_mid)
+
+{txt}Fitting full model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-2817.9191}  
+Iteration 1:{space 2}Log likelihood = {res:-1301.6748}  
+Iteration 2:{space 2}Log likelihood = {res:-1279.3144}  
+Iteration 3:{space 2}Log likelihood = {res:-1253.3326}  
+Iteration 4:{space 2}Log likelihood = {res:-1252.1545}  
+Iteration 5:{space 2}Log likelihood = {res:-1252.1508}  
+Iteration 6:{space 2}Log likelihood = {res:-1252.1508}  
+{res}
+{txt}{col 1}Interval regression{col 53}{lalign 17:Number of obs}{col 70} = {res}{ralign 6:450}
+{txt}{col 53}{ralign 17:Uncensored}{col 70} = {res}{ralign 6:0}
+{txt}{col 53}{ralign 17:Left-censored}{col 70} = {res}{ralign 6:33}
+{txt}{col 53}{ralign 17:   Right-censored}{col 70} = {res}{ralign 6:30}
+{txt}{col 53}{ralign 17:Interval-cens.}{col 70} = {res}{ralign 6:387}
+
+{txt}{col 53}{lalign 17:Wald chi2({res:1})}{col 70} = {res}{ralign 6:6.89}
+{txt}{col 1}{lalign 14:Log likelihood}{col 15} = {res}{ralign 10:-1252.1508}{txt}{col 53}{lalign 17:Prob > chi2}{col 70} = {res}{ralign 6:0.0087}
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 15}{c |} Coefficient{col 27}  Std. err.{col 39}      z{col 47}   P>|z|{col 55}     [95% con{col 68}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}model         {txt}{c |}
+risk_attitude {c |}{col 15}{res}{space 2} .1887805{col 27}{space 2} .0719184{col 38}{space 1}    2.62{col 47}{space 3}0.009{col 55}{space 4} .0478229{col 68}{space 3}  .329738
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 2.676423{col 27}{space 2}  .354476{col 38}{space 1}    7.55{col 47}{space 3}0.000{col 55}{space 4} 1.981663{col 68}{space 3} 3.371183
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}lnsigma       {txt}{c |}
+{space 5}crra_mid {c |}{col 15}{res}{space 2}-2.158737{col 27}{space 2} .1761862{col 38}{space 1}  -12.25{col 47}{space 3}0.000{col 55}{space 4}-2.504056{col 68}{space 3}-1.813418
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 2.624498{col 27}{space 2}  .089372{col 38}{space 1}   29.37{col 47}{space 3}0.000{col 55}{space 4} 2.449332{col 68}{space 3} 2.799664
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. estimates store heteroskedastic_model
+{txt}
+{com}. 
+. * export into LaTeX
+. esttab heteroskedastic_model using "heteroskedastic_model.tex", replace se title ("Interval regression between row switch and risk attitude, heteroskedastic") label keep(risk_attitude _cons) stats(ll N, labels("Log-Likelihood" "Observations")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+{res}{txt}(output written to {browse  `"heteroskedastic_model.tex"'})
+
+{com}. 
+. * We can compare the heteroskedastic and homoskedastic model by running an lrtest
+. lrtest homoskedastic_model heteroskedastic_model
+
+{txt}Likelihood-ratio test
+Assumption: {res}{stata est replay homoskedastic_model:homoskedasti~l}{txt} nested within {res}{stata est replay heteroskedastic_model:heteroskedas~l}
+
+{txt}{ralign 11:LR chi2({res:1})} = {res}{ralign 6:192.32}
+{txt}{ralign 11:Prob > chi2} = {res}{ralign 6:0.0000}
+{txt}
+{com}. 
+. **# Task 3
+. * repeating the estimation in Task 1 but using CRRA as a dependent variable
+. intreg crra_lo crra_hi risk_attitude
+
+{txt}Fitting constant-only model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1407.3573}  
+Iteration 1:{space 2}Log likelihood = {res:-1400.9064}  
+Iteration 2:{space 2}Log likelihood = {res:-1400.8777}  
+Iteration 3:{space 2}Log likelihood = {res:-1400.8777}  
+{res}
+{txt}Fitting full model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1396.7633}  
+Iteration 1:{space 2}Log likelihood = {res: -1390.388}  
+Iteration 2:{space 2}Log likelihood = {res:-1390.3608}  
+Iteration 3:{space 2}Log likelihood = {res:-1390.3608}  
+{res}
+{txt}{col 1}Interval regression{col 53}{lalign 17:Number of obs}{col 70} = {res}{ralign 6:450}
+{txt}{col 53}{ralign 17:Uncensored}{col 70} = {res}{ralign 6:0}
+{txt}{col 53}{ralign 17:Left-censored}{col 70} = {res}{ralign 6:30}
+{txt}{col 53}{ralign 17:   Right-censored}{col 70} = {res}{ralign 6:33}
+{txt}{col 53}{ralign 17:Interval-cens.}{col 70} = {res}{ralign 6:387}
+
+{txt}{col 53}{lalign 17:LR chi2({res:1})}{col 70} = {res}{ralign 6:21.03}
+{txt}{col 1}{lalign 14:Log likelihood}{col 15} = {res}{ralign 10:-1390.3608}{txt}{col 53}{lalign 17:Prob > chi2}{col 70} = {res}{ralign 6:0.0000}
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 15}{c |} Coefficient{col 27}  Std. err.{col 39}      z{col 47}   P>|z|{col 55}     [95% con{col 68}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+risk_attitude {c |}{col 15}{res}{space 2}-.0377299{col 27}{space 2} .0081376{col 38}{space 1}   -4.64{col 47}{space 3}0.000{col 55}{space 4}-.0536793{col 68}{space 3}-.0217806
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} .6037262{col 27}{space 2} .0439114{col 38}{space 1}   13.75{col 47}{space 3}0.000{col 55}{space 4} .5176614{col 68}{space 3}  .689791
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     /lnsigma {c |}{col 15}{res}{space 2} -.844802{col 27}{space 2} .0375384{col 38}{space 1}  -22.50{col 47}{space 3}0.000{col 55}{space 4} -.918376{col 68}{space 3} -.771228
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+        sigma {c |}{col 15}{res}{space 2} .4296424{col 27}{space 2} .0161281{col 55}{space 4} .3991667{col 68}{space 3} .4624448
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. estimates store crra_homoskedastic_model
+{txt}
+{com}. 
+. * export into LaTeX
+. esttab crra_homoskedastic_model using "crra_homoskedastic_model.tex", replace se title ("Interval regression between CRRA estimations and risk attitude, homoskedastic") label keep(risk_attitude _cons) stats(ll N, labels("Log-Likelihood" "Observations")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+{res}{txt}(output written to {browse  `"crra_homoskedastic_model.tex"'})
+
+{com}. 
+. * shows how predicted mean of CRRA varies with the hypothetical survey response level, showing 95% confidence intervals on this prediction from the estimated model
+. margins, at(risk_attitude=(0(1)10)) predict(xb)
+{res}
+{txt}{col 1}Adjusted predictions{col 60}{lalign 13:Number of obs}{col 73} = {res}{ralign 3:450}
+{txt}{col 1}Model VCE: {res:OIM}
+
+{txt}{p2colset 1 13 13 2}{...}
+{p2col:Expression:}{res:Linear prediction, predict(xb)}{p_end}
+{p2colreset}{...}
+{lalign 8:1._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:0}}
+{lalign 8:2._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:1}}
+{lalign 8:3._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:2}}
+{lalign 8:4._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:3}}
+{lalign 8:5._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:4}}
+{lalign 8:6._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:5}}
+{lalign 8:7._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:6}}
+{lalign 8:8._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:7}}
+{lalign 8:9._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:8}}
+{lalign 8:10._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:9}}
+{lalign 8:11._at: }{space 0}{lalign 13:risk_attitude} = {res:{ralign 2:10}}
+
+{res}{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26} Delta-method
+{col 14}{c |}     Margin{col 26}   std. err.{col 38}      z{col 46}   P>|z|{col 54}     [95% con{col 67}f. interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}_at {c |}
+{space 10}1  {c |}{col 14}{res}{space 2} .6037262{col 26}{space 2} .0439114{col 37}{space 1}   13.75{col 46}{space 3}0.000{col 54}{space 4} .5176614{col 67}{space 3}  .689791
+{txt}{space 10}2  {c |}{col 14}{res}{space 2} .5659963{col 26}{space 2} .0369109{col 37}{space 1}   15.33{col 46}{space 3}0.000{col 54}{space 4} .4936523{col 67}{space 3} .6383403
+{txt}{space 10}3  {c |}{col 14}{res}{space 2} .5282664{col 26}{space 2} .0304803{col 37}{space 1}   17.33{col 46}{space 3}0.000{col 54}{space 4}  .468526{col 67}{space 3} .5880067
+{txt}{space 10}4  {c |}{col 14}{res}{space 2} .4905364{col 26}{space 2} .0250625{col 37}{space 1}   19.57{col 46}{space 3}0.000{col 54}{space 4} .4414148{col 67}{space 3} .5396581
+{txt}{space 10}5  {c |}{col 14}{res}{space 2} .4528065{col 26}{space 2} .0214394{col 37}{space 1}   21.12{col 46}{space 3}0.000{col 54}{space 4} .4107861{col 67}{space 3}  .494827
+{txt}{space 10}6  {c |}{col 14}{res}{space 2} .4150766{col 26}{space 2} .0205817{col 37}{space 1}   20.17{col 46}{space 3}0.000{col 54}{space 4} .3747372{col 67}{space 3}  .455416
+{txt}{space 10}7  {c |}{col 14}{res}{space 2} .3773467{col 26}{space 2} .0228036{col 37}{space 1}   16.55{col 46}{space 3}0.000{col 54}{space 4} .3326524{col 67}{space 3} .4220409
+{txt}{space 10}8  {c |}{col 14}{res}{space 2} .3396167{col 26}{space 2}  .027365{col 37}{space 1}   12.41{col 46}{space 3}0.000{col 54}{space 4} .2859824{col 67}{space 3} .3932511
+{txt}{space 10}9  {c |}{col 14}{res}{space 2} .3018868{col 26}{space 2} .0333185{col 37}{space 1}    9.06{col 46}{space 3}0.000{col 54}{space 4} .2365838{col 67}{space 3} .3671898
+{txt}{space 9}10  {c |}{col 14}{res}{space 2} .2641569{col 26}{space 2} .0400479{col 37}{space 1}    6.60{col 46}{space 3}0.000{col 54}{space 4} .1856644{col 67}{space 3} .3426494
+{txt}{space 9}11  {c |}{col 14}{res}{space 2}  .226427{col 26}{space 2} .0472228{col 37}{space 1}    4.79{col 46}{space 3}0.000{col 54}{space 4} .1338719{col 67}{space 3}  .318982
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. 
+. * save the edited dataset in a separate file
+. save "dohmen_updated.dta", replace
+{txt}{p 0 4 2}
+file {bf}
+dohmen_updated.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. * restore original dohmen
+. restore
+{txt}
+{com}. 
+. **# Task 4
+. * preserve again, as this task requires clearing the data
+. preserve
+{txt}
+{com}. 
+. * interval regression using CRRA intervals, like in Task 3
+. intreg crra_lo crra_hi risk_attitude
+
+{txt}Fitting constant-only model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1407.3573}  
+Iteration 1:{space 2}Log likelihood = {res:-1400.9064}  
+Iteration 2:{space 2}Log likelihood = {res:-1400.8777}  
+Iteration 3:{space 2}Log likelihood = {res:-1400.8777}  
+{res}
+{txt}Fitting full model:
+{res}
+{txt}Iteration 0:{space 2}Log likelihood = {res:-1396.7633}  
+Iteration 1:{space 2}Log likelihood = {res: -1390.388}  
+Iteration 2:{space 2}Log likelihood = {res:-1390.3608}  
+Iteration 3:{space 2}Log likelihood = {res:-1390.3608}  
+{res}
+{txt}{col 1}Interval regression{col 53}{lalign 17:Number of obs}{col 70} = {res}{ralign 6:450}
+{txt}{col 53}{ralign 17:Uncensored}{col 70} = {res}{ralign 6:0}
+{txt}{col 53}{ralign 17:Left-censored}{col 70} = {res}{ralign 6:30}
+{txt}{col 53}{ralign 17:   Right-censored}{col 70} = {res}{ralign 6:33}
+{txt}{col 53}{ralign 17:Interval-cens.}{col 70} = {res}{ralign 6:387}
+
+{txt}{col 53}{lalign 17:LR chi2({res:1})}{col 70} = {res}{ralign 6:21.03}
+{txt}{col 1}{lalign 14:Log likelihood}{col 15} = {res}{ralign 10:-1390.3608}{txt}{col 53}{lalign 17:Prob > chi2}{col 70} = {res}{ralign 6:0.0000}
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 15}{c |} Coefficient{col 27}  Std. err.{col 39}      z{col 47}   P>|z|{col 55}     [95% con{col 68}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+risk_attitude {c |}{col 15}{res}{space 2}-.0377299{col 27}{space 2} .0081376{col 38}{space 1}   -4.64{col 47}{space 3}0.000{col 55}{space 4}-.0536793{col 68}{space 3}-.0217806
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} .6037262{col 27}{space 2} .0439114{col 38}{space 1}   13.75{col 47}{space 3}0.000{col 55}{space 4} .5176614{col 68}{space 3}  .689791
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     /lnsigma {c |}{col 15}{res}{space 2} -.844802{col 27}{space 2} .0375384{col 38}{space 1}  -22.50{col 47}{space 3}0.000{col 55}{space 4} -.918376{col 68}{space 3} -.771228
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+        sigma {c |}{col 15}{res}{space 2} .4296424{col 27}{space 2} .0161281{col 55}{space 4} .3991667{col 68}{space 3} .4624448
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. * Store the estimated coefficients and sigma
+. scalar beta0 = _b[_cons]
+{txt}
+{com}. scalar beta1 = _b[risk_attitude]
+{txt}
+{com}. scalar sigma = exp(_b[/lnsigma])
+{txt}
+{com}. 
+. * Create a dataset for simulation
+. clear
+{txt}
+{com}. set obs 11
+{txt}{p}
+Number of observations ({bf:_N}) was 0,
+now 11.
+{p_end}
+
+{com}. generate risk_attitude = _n - 1
+{txt}
+{com}. 
+. * Calculate predicted means for each risk_attitude level
+. generate pred_mean = beta0 + beta1 * risk_attitude
+{txt}
+{com}. 
+. * simulate CRRA values for each risk_attitude level
+. set seed 12345
+{txt}
+{com}. expand 1000
+{txt}(10,989 observations created)
+
+{com}. bysort risk_attitude: generate sim_id = _n
+{txt}
+{com}. generate sim_crra = pred_mean + sigma * invnorm(uniform())
+{txt}
+{com}. 
+. * calculate mean and 95% confidence intervals
+. bysort risk_attitude: egen mean_crra = mean(sim_crra)
+{txt}
+{com}. bysort risk_attitude: egen p2_5 = pctile(sim_crra), p(2.5)
+{txt}
+{com}. bysort risk_attitude: egen p97_5 = pctile(sim_crra), p(97.5)
+{txt}
+{com}. 
+. * Keep only one observation per risk_attitude level
+. bysort risk_attitude: keep if _n == 1
+{txt}(10,989 observations deleted)
+
+{com}. 
+. * visualize the results
+. twoway (line mean_crra risk_attitude, sort) ///
+>        (rcap p97_5 p2_5 risk_attitude, sort), ///
+>        ytitle("Predicted CRRA") ///
+>        xtitle("Risk Attitude Score") ///
+>        title("Predicted Mean CRRA with 95% Confidence Intervals") ///
+>        legend(off)
+{res}{txt}
+{com}. 
+. list risk_attitude mean_crra p2_5 p97_5, clean noobs
+{txt}
+    {res}risk_a~e   mean_c~a        p2_5      p97_5 {txt} 
+    {res}       0   .5940551   -.2334366   1.460884 {txt} 
+    {res}       1   .5577046   -.3121462   1.387828 {txt} 
+    {res}       2   .5290354    -.324188    1.42221 {txt} 
+    {res}       3   .4867336   -.3644379   1.307482 {txt} 
+    {res}       4   .4552341   -.3514957   1.301346 {txt} 
+    {res}       5   .4160047   -.3933557   1.201797 {txt} 
+    {res}       6   .4000891   -.4246299   1.260857 {txt} 
+    {res}       7   .3249075   -.5175887   1.138151 {txt} 
+    {res}       8    .324099   -.5437163   1.197112 {txt} 
+    {res}       9   .2834082    -.552037   1.179043 {txt} 
+    {res}      10   .2393259   -.6460882   1.077323 {txt} 
+
+{com}.            
+. * save the charts
+. graph export "crra_homoskedastic_model_predicted_graph.png", replace
+{txt}{p 0 4 2}
+(file {bf}
+crra_homoskedastic_model_predicted_graph.png{rm}
+not found)
+{p_end}
+{p 0 4 2}
+file {bf}
+crra_homoskedastic_model_predicted_graph.png{rm}
+saved as
+PNG
+format
+{p_end}
+
+{com}. 
+. 
+. * restore previous data state
+. restore
+{txt}
+{com}. 
+. **# Finishing up
+. * closes log file, translate into PDF
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\bjiao\OneDrive - The University of Chicago\Desktop\College\ECON 21160\Week 7 (Harrison)\homework\homework-victor.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}26 Nov 2024, 00:07:49
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

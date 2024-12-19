@@ -1,0 +1,426 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\bjiao\OneDrive - The University of Chicago\Desktop\Colleg
+> e\ECON 21160\Week 7 (Harrison)\homework\homework-victor.smcl
+  log type:  smcl
+ opened on:  26 Nov 2024, 00:07:45
+
+. 
+. * configurations and certifications
+. capture: version 18
+
+. set more off
+
+. capture: set processors 1
+
+. set scheme stcolor
+
+. capture: set scheme stcolor
+
+. graph set window fontface "Candara"
+
+. 
+. * install esttab
+. ssc install estout
+checking estout consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. 
+. * tell us what version ran
+. about
+
+StataNow/MP 18.5 for Windows (64-bit x86-64)
+Revision 22 May 2024
+Copyright 1985-2023 StataCorp LLC
+
+Total physical memory:       16.00 GB
+Available physical memory:   10.34 GB
+
+Stata license: 745-user 2-core network, expiring 30 Jun 2025
+Serial number: 501809309429
+  Licensed to: University of Chicago
+               ATS
+
+. 
+. * read in the homework data
+. use dohmen, clear
+
+. 
+. **# Descriptive functions
+. * description of a few variables that may be
+. * useful to the regression
+. * run when necessary
+. describe row_hi row_lo
+
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------
+row_hi          float   %9.0g                 Upper row number of the switch
+row_lo          float   %9.0g                 Lower row number of the switch
+
+. describe crra_hi crra_lo
+
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------
+crra_hi         float   %9.0g                 Upper bound of CRRA
+crra_lo         float   %9.0g                 Lower bound of CRRA
+
+. summarize row_hi row_lo risk_attitude
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      row_hi |        420    8.554762    5.285126          1         20
+      row_lo |        417    9.047962    5.704469          1         20
+risk_attit~e |        450    4.764444    2.535727          0         10
+
+. summarize crra_hi crra_lo risk_attitude
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     crra_hi |        417    .4103597    .3797287       -.52        .88
+     crra_lo |        420    .4551429      .31588       -.52        .88
+risk_attit~e |        450    4.764444    2.535727          0         10
+
+. 
+. 
+. * preserve the dohmen dataset from being directly edited
+. preserve
+
+. 
+. **# Task 1
+. intreg row_lo row_hi risk_attitude
+
+Fitting constant-only model:
+
+Iteration 0:  Log likelihood = -1366.8696  
+Iteration 1:  Log likelihood = -1360.4703  
+Iteration 2:  Log likelihood = -1360.4422  
+Iteration 3:  Log likelihood = -1360.4422  
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -1354.6637  
+Iteration 1:  Log likelihood = -1348.3396  
+Iteration 2:  Log likelihood = -1348.3131  
+Iteration 3:  Log likelihood = -1348.3131  
+
+Interval regression                                 Number of obs     =    450
+                                                           Uncensored =      0
+                                                        Left-censored =     33
+                                                       Right-censored =     30
+                                                       Interval-cens. =    387
+
+                                                    LR chi2(1)        =  24.26
+Log likelihood = -1348.3131                         Prob > chi2       = 0.0000
+
+-------------------------------------------------------------------------------
+              | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+risk_attitude |   .6113368   .1225556     4.99   0.000     .3711322    .8515413
+        _cons |   5.918866   .6609935     8.95   0.000     4.623343     7.21439
+--------------+----------------------------------------------------------------
+     /lnsigma |   1.866821   .0374396    49.86   0.000     1.793441    1.940202
+--------------+----------------------------------------------------------------
+        sigma |   6.467705   .2421485                      6.010098    6.960155
+-------------------------------------------------------------------------------
+
+. estimates store homoskedastic_model
+
+. 
+. * export into LaTeX
+. esttab homoskedastic_model using "homoskedastic_model.tex", replace se title 
+> ("Interval regression between row switch and risk attitude, homoskedastic") l
+> abel keep(risk_attitude _cons) stats(ll N, labels("Log-Likelihood" "Observati
+> ons")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+(output written to homoskedastic_model.tex)
+
+. 
+. **# Task 2
+. intreg row_lo row_hi risk_attitude, het(crra_mid)
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -2817.9191  
+Iteration 1:  Log likelihood = -1301.6748  
+Iteration 2:  Log likelihood = -1279.3144  
+Iteration 3:  Log likelihood = -1253.3326  
+Iteration 4:  Log likelihood = -1252.1545  
+Iteration 5:  Log likelihood = -1252.1508  
+Iteration 6:  Log likelihood = -1252.1508  
+
+Interval regression                                 Number of obs     =    450
+                                                           Uncensored =      0
+                                                        Left-censored =     33
+                                                       Right-censored =     30
+                                                       Interval-cens. =    387
+
+                                                    Wald chi2(1)      =   6.89
+Log likelihood = -1252.1508                         Prob > chi2       = 0.0087
+
+-------------------------------------------------------------------------------
+              | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+model         |
+risk_attitude |   .1887805   .0719184     2.62   0.009     .0478229     .329738
+        _cons |   2.676423    .354476     7.55   0.000     1.981663    3.371183
+--------------+----------------------------------------------------------------
+lnsigma       |
+     crra_mid |  -2.158737   .1761862   -12.25   0.000    -2.504056   -1.813418
+        _cons |   2.624498    .089372    29.37   0.000     2.449332    2.799664
+-------------------------------------------------------------------------------
+
+. estimates store heteroskedastic_model
+
+. 
+. * export into LaTeX
+. esttab heteroskedastic_model using "heteroskedastic_model.tex", replace se ti
+> tle ("Interval regression between row switch and risk attitude, heteroskedast
+> ic") label keep(risk_attitude _cons) stats(ll N, labels("Log-Likelihood" "Obs
+> ervations")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+(output written to heteroskedastic_model.tex)
+
+. 
+. * We can compare the heteroskedastic and homoskedastic model by running an lr
+> test
+. lrtest homoskedastic_model heteroskedastic_model
+
+Likelihood-ratio test
+Assumption: homoskedasti~l nested within heteroskedas~l
+
+ LR chi2(1) = 192.32
+Prob > chi2 = 0.0000
+
+. 
+. **# Task 3
+. * repeating the estimation in Task 1 but using CRRA as a dependent variable
+. intreg crra_lo crra_hi risk_attitude
+
+Fitting constant-only model:
+
+Iteration 0:  Log likelihood = -1407.3573  
+Iteration 1:  Log likelihood = -1400.9064  
+Iteration 2:  Log likelihood = -1400.8777  
+Iteration 3:  Log likelihood = -1400.8777  
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -1396.7633  
+Iteration 1:  Log likelihood =  -1390.388  
+Iteration 2:  Log likelihood = -1390.3608  
+Iteration 3:  Log likelihood = -1390.3608  
+
+Interval regression                                 Number of obs     =    450
+                                                           Uncensored =      0
+                                                        Left-censored =     30
+                                                       Right-censored =     33
+                                                       Interval-cens. =    387
+
+                                                    LR chi2(1)        =  21.03
+Log likelihood = -1390.3608                         Prob > chi2       = 0.0000
+
+-------------------------------------------------------------------------------
+              | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+risk_attitude |  -.0377299   .0081376    -4.64   0.000    -.0536793   -.0217806
+        _cons |   .6037262   .0439114    13.75   0.000     .5176614     .689791
+--------------+----------------------------------------------------------------
+     /lnsigma |   -.844802   .0375384   -22.50   0.000     -.918376    -.771228
+--------------+----------------------------------------------------------------
+        sigma |   .4296424   .0161281                      .3991667    .4624448
+-------------------------------------------------------------------------------
+
+. estimates store crra_homoskedastic_model
+
+. 
+. * export into LaTeX
+. esttab crra_homoskedastic_model using "crra_homoskedastic_model.tex", replace
+>  se title ("Interval regression between CRRA estimations and risk attitude, h
+> omoskedastic") label keep(risk_attitude _cons) stats(ll N, labels("Log-Likeli
+> hood" "Observations")) star(* 0.10 ** 0.05 *** 0.01) nonumber
+(output written to crra_homoskedastic_model.tex)
+
+. 
+. * shows how predicted mean of CRRA varies with the hypothetical survey respon
+> se level, showing 95% confidence intervals on this prediction from the estima
+> ted model
+. margins, at(risk_attitude=(0(1)10)) predict(xb)
+
+Adjusted predictions                                       Number of obs = 450
+Model VCE: OIM
+
+Expression: Linear prediction, predict(xb)
+1._at:  risk_attitude =  0
+2._at:  risk_attitude =  1
+3._at:  risk_attitude =  2
+4._at:  risk_attitude =  3
+5._at:  risk_attitude =  4
+6._at:  risk_attitude =  5
+7._at:  risk_attitude =  6
+8._at:  risk_attitude =  7
+9._at:  risk_attitude =  8
+10._at: risk_attitude =  9
+11._at: risk_attitude = 10
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .6037262   .0439114    13.75   0.000     .5176614     .689791
+          2  |   .5659963   .0369109    15.33   0.000     .4936523    .6383403
+          3  |   .5282664   .0304803    17.33   0.000      .468526    .5880067
+          4  |   .4905364   .0250625    19.57   0.000     .4414148    .5396581
+          5  |   .4528065   .0214394    21.12   0.000     .4107861     .494827
+          6  |   .4150766   .0205817    20.17   0.000     .3747372     .455416
+          7  |   .3773467   .0228036    16.55   0.000     .3326524    .4220409
+          8  |   .3396167    .027365    12.41   0.000     .2859824    .3932511
+          9  |   .3018868   .0333185     9.06   0.000     .2365838    .3671898
+         10  |   .2641569   .0400479     6.60   0.000     .1856644    .3426494
+         11  |    .226427   .0472228     4.79   0.000     .1338719     .318982
+------------------------------------------------------------------------------
+
+. 
+. 
+. * save the edited dataset in a separate file
+. save "dohmen_updated.dta", replace
+file dohmen_updated.dta saved
+
+. 
+. * restore original dohmen
+. restore
+
+. 
+. **# Task 4
+. * preserve again, as this task requires clearing the data
+. preserve
+
+. 
+. * interval regression using CRRA intervals, like in Task 3
+. intreg crra_lo crra_hi risk_attitude
+
+Fitting constant-only model:
+
+Iteration 0:  Log likelihood = -1407.3573  
+Iteration 1:  Log likelihood = -1400.9064  
+Iteration 2:  Log likelihood = -1400.8777  
+Iteration 3:  Log likelihood = -1400.8777  
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -1396.7633  
+Iteration 1:  Log likelihood =  -1390.388  
+Iteration 2:  Log likelihood = -1390.3608  
+Iteration 3:  Log likelihood = -1390.3608  
+
+Interval regression                                 Number of obs     =    450
+                                                           Uncensored =      0
+                                                        Left-censored =     30
+                                                       Right-censored =     33
+                                                       Interval-cens. =    387
+
+                                                    LR chi2(1)        =  21.03
+Log likelihood = -1390.3608                         Prob > chi2       = 0.0000
+
+-------------------------------------------------------------------------------
+              | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+risk_attitude |  -.0377299   .0081376    -4.64   0.000    -.0536793   -.0217806
+        _cons |   .6037262   .0439114    13.75   0.000     .5176614     .689791
+--------------+----------------------------------------------------------------
+     /lnsigma |   -.844802   .0375384   -22.50   0.000     -.918376    -.771228
+--------------+----------------------------------------------------------------
+        sigma |   .4296424   .0161281                      .3991667    .4624448
+-------------------------------------------------------------------------------
+
+. 
+. * Store the estimated coefficients and sigma
+. scalar beta0 = _b[_cons]
+
+. scalar beta1 = _b[risk_attitude]
+
+. scalar sigma = exp(_b[/lnsigma])
+
+. 
+. * Create a dataset for simulation
+. clear
+
+. set obs 11
+Number of observations (_N) was 0, now 11.
+
+. generate risk_attitude = _n - 1
+
+. 
+. * Calculate predicted means for each risk_attitude level
+. generate pred_mean = beta0 + beta1 * risk_attitude
+
+. 
+. * simulate CRRA values for each risk_attitude level
+. set seed 12345
+
+. expand 1000
+(10,989 observations created)
+
+. bysort risk_attitude: generate sim_id = _n
+
+. generate sim_crra = pred_mean + sigma * invnorm(uniform())
+
+. 
+. * calculate mean and 95% confidence intervals
+. bysort risk_attitude: egen mean_crra = mean(sim_crra)
+
+. bysort risk_attitude: egen p2_5 = pctile(sim_crra), p(2.5)
+
+. bysort risk_attitude: egen p97_5 = pctile(sim_crra), p(97.5)
+
+. 
+. * Keep only one observation per risk_attitude level
+. bysort risk_attitude: keep if _n == 1
+(10,989 observations deleted)
+
+. 
+. * visualize the results
+. twoway (line mean_crra risk_attitude, sort) ///
+>        (rcap p97_5 p2_5 risk_attitude, sort), ///
+>        ytitle("Predicted CRRA") ///
+>        xtitle("Risk Attitude Score") ///
+>        title("Predicted Mean CRRA with 95% Confidence Intervals") ///
+>        legend(off)
+
+. 
+. list risk_attitude mean_crra p2_5 p97_5, clean noobs
+
+    risk_a~e   mean_c~a        p2_5      p97_5  
+           0   .5940551   -.2334366   1.460884  
+           1   .5577046   -.3121462   1.387828  
+           2   .5290354    -.324188    1.42221  
+           3   .4867336   -.3644379   1.307482  
+           4   .4552341   -.3514957   1.301346  
+           5   .4160047   -.3933557   1.201797  
+           6   .4000891   -.4246299   1.260857  
+           7   .3249075   -.5175887   1.138151  
+           8    .324099   -.5437163   1.197112  
+           9   .2834082    -.552037   1.179043  
+          10   .2393259   -.6460882   1.077323  
+
+.            
+. * save the charts
+. graph export "crra_homoskedastic_model_predicted_graph.png", replace
+(file crra_homoskedastic_model_predicted_graph.png not found)
+file crra_homoskedastic_model_predicted_graph.png saved as PNG format
+
+. 
+. 
+. * restore previous data state
+. restore
+
+. 
+. **# Finishing up
+. * closes log file, translate into PDF
+. log close
+      name:  <unnamed>
+       log:  C:\Users\bjiao\OneDrive - The University of Chicago\Desktop\Colleg
+> e\ECON 21160\Week 7 (Harrison)\homework\homework-victor.smcl
+  log type:  smcl
+ closed on:  26 Nov 2024, 00:07:49
+-------------------------------------------------------------------------------
